@@ -23,3 +23,10 @@ Oven Room: Pizza Dough and Oven
 game map (ever so slightly ai generated caus i dont want to draw on a trackpad)
 
 ![image](https://github.com/user-attachments/assets/c948a826-595c-4a60-8fbb-5b7d138578a8)
+
+
+credits
+i really really like this video caus it helped me get around to how to do c++ (i had some c# exp)
+https://www.youtube.com/watch?v=uTTo5zVyBgU
+
+(i really really do not like turbo c caus its a pain and wont run on modern macos)
