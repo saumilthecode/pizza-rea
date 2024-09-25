@@ -88,60 +88,54 @@ void drawCompass() {
     int compassY = SCREEN_HEIGHT - 8;
 
     // North direction
-    gotoxy(compassX, compassY);
+    gotoxy(compassX + 3, compassY);
     if (pizzeriaRooms[currentLocation].north != -1) {
-        textattr(YELLOW);  // Yellow for accessible direction
-        printf("   N   ");
+        textcolor(YELLOW);
+        putch('N');
     } else {
-        textattr(RED);     // Red for inaccessible direction
-        printf("   N   ");
+        textcolor(RED);
+        putch('N');
     }
 
-    // Middle vertical bar
-    gotoxy(compassX, compassY + 1);
-    textattr(WHITE);      // Default color for separator
-    printf("   |   ");
-    
+    // South direction
+    gotoxy(compassX + 3, compassY + 4);
+    if (pizzeriaRooms[currentLocation].south != -1) {
+        textcolor(YELLOW);
+        putch('S');
+    } else {
+        textcolor(RED);
+        putch('S');
+    }
+
+    // East direction
+    gotoxy(compassX + 6, compassY + 2);
+    if (pizzeriaRooms[currentLocation].east != -1) {
+        textcolor(YELLOW);
+        putch('E');
+    } else {
+        textcolor(RED);
+        putch('E');
+    }
+
     // West direction
     gotoxy(compassX, compassY + 2);
     if (pizzeriaRooms[currentLocation].west != -1) {
-        textattr(YELLOW);  // Yellow for accessible direction
-        printf("W");
+        textcolor(YELLOW);
+        putch('W');
     } else {
-        textattr(RED);     // Red for inaccessible direction
-        printf("W");
+        textcolor(RED);
+        putch('W');
     }
 
-    // Middle plus sign
-    textattr(WHITE);      // Default color for separator
-    printf("--+--");
-
-    // East direction
-    if (pizzeriaRooms[currentLocation].east != -1) {
-        textattr(YELLOW);  // Yellow for accessible direction
-        printf("E");
-    } else {
-        textattr(RED);     // Red for inaccessible direction
-        printf("E");
-    }
-
-    // Middle vertical bar
-    gotoxy(compassX, compassY + 3);
-    textattr(WHITE);      // Default color for separator
-    printf("   |   ");
-    
-    // South direction
-    gotoxy(compassX, compassY + 4);
-    if (pizzeriaRooms[currentLocation].south != -1) {
-        textattr(YELLOW);  // Yellow for accessible direction
-        printf("   S   ");
-    } else {
-        textattr(RED);     // Red for inaccessible direction
-        printf("   S   ");
-    }
-
-    textattr(WHITE);  // Reset text color to default
+    // Connectors for the compass (fixed lines)
+    textcolor(WHITE);  // Set connectors back to white
+    gotoxy(compassX + 3, compassY + 1); putch('|');
+    gotoxy(compassX + 3, compassY + 3); putch('|');
+    gotoxy(compassX + 1, compassY + 2); putch('-');
+    gotoxy(compassX + 5, compassY + 2); putch('-');
+    gotoxy(compassX + 3, compassY + 2); putch('+');  // Center of the compass
 }
+
 
 void displayCommands() {
     int commandsX = SCREEN_WIDTH - 20;
@@ -178,55 +172,76 @@ void displayBackpack() {
 }
 
 void drawMap() {
-    int mapX = (SCREEN_WIDTH - 40) / 2;
-    int mapY = SCREEN_HEIGHT - 10;  // Adjust map position above the input area
+    // Map coordinates
+    int mapX = (SCREEN_WIDTH - 11) / 2;  // Center horizontally
+    int mapY = SCREEN_HEIGHT - 8;        // Position closer to the bottom
 
+    // Drawing the map header
     gotoxy(mapX, mapY);
-    textattr(YELLOW);  // Set color for map header
-    printf("Pizzeria Map: ");
-    
-    // Create a visual layout of the rooms and set colors based on movement possibilities
-    gotoxy(mapX, mapY + 1);
-    
-    // Kitchen (K)
-    gotoxy(mapX, mapY + 2);
-    if (pizzeriaRooms[currentLocation].north == 0) {
-        textattr(YELLOW);  // Yellow for north if accessible
-    } else {
-        textattr(WHITE);   // White if inaccessible
-    }
-    printf("   K   \n");
+    textcolor(WHITE);
+    printf("Pizzeria Map:");
 
-    // Storage Room (S) and Dining Area (D)
-    gotoxy(mapX, mapY + 3);
-    if (pizzeriaRooms[currentLocation].west == 1) {
-        textattr(YELLOW);  // Yellow for west if accessible
+    // Row 1: Kitchen (Room 0)
+    gotoxy(mapX + 4, mapY + 1);  // Centered for Kitchen
+    if (currentLocation == 0) {
+        textcolor(GREEN);  // Player's current position
+        printf("K");
+    } else if (pizzeriaRooms[0].north == currentLocation || pizzeriaRooms[0].south == currentLocation ||
+               pizzeriaRooms[0].east == currentLocation || pizzeriaRooms[0].west == currentLocation) {
+        textcolor(YELLOW);  // Accessible room (adjacent to current)
+        printf("K");
     } else {
-        textattr(WHITE);
+        textcolor(WHITE);  // Inaccessible room
+        printf("K");
     }
-    printf("S");
 
-    textattr(WHITE);  // Default color for the space between rooms
-    printf("  ");
-    
-    if (pizzeriaRooms[currentLocation].east == 2 || pizzeriaRooms[currentLocation].south == 2) {
-        textattr(YELLOW);  // Yellow for east/south if accessible
+    // Row 2: Storage Room (Room 1) and Dining Area (Room 2)
+    gotoxy(mapX, mapY + 2);  // Left for Storage Room
+    if (currentLocation == 1) {
+        textcolor(GREEN);  // Player's current position
+        printf("S");
+    } else if (pizzeriaRooms[1].north == currentLocation || pizzeriaRooms[1].south == currentLocation ||
+               pizzeriaRooms[1].east == currentLocation || pizzeriaRooms[1].west == currentLocation) {
+        textcolor(YELLOW);  // Accessible room
+        printf("S");
     } else {
-        textattr(WHITE);
+        textcolor(WHITE);  // Inaccessible room
+        printf("S");
     }
-    printf("D");
 
-    // Oven Room (O)
-    gotoxy(mapX, mapY + 4);
-    if (pizzeriaRooms[currentLocation].south == 3) {
-        textattr(YELLOW);  // Yellow for south if accessible
+    gotoxy(mapX + 8, mapY + 2);  // Right for Dining Area
+    if (currentLocation == 2) {
+        textcolor(GREEN);  // Player's current position
+        printf("D");
+    } else if (pizzeriaRooms[2].north == currentLocation || pizzeriaRooms[2].south == currentLocation ||
+               pizzeriaRooms[2].east == currentLocation || pizzeriaRooms[2].west == currentLocation) {
+        textcolor(YELLOW);  // Accessible room
+        printf("D");
     } else {
-        textattr(WHITE);
+        textcolor(WHITE);  // Inaccessible room
+        printf("D");
     }
-    printf("   O   \n");
-    
-    textattr(WHITE);  // Reset to default color
+
+    // Row 3: Oven Room (Room 3)
+    gotoxy(mapX + 4, mapY + 3);  // Centered for Oven Room
+    if (currentLocation == 3) {
+        textcolor(GREEN);  // Player's current position
+        printf("O");
+    } else if (pizzeriaRooms[3].north == currentLocation || pizzeriaRooms[3].south == currentLocation ||
+               pizzeriaRooms[3].east == currentLocation || pizzeriaRooms[3].west == currentLocation) {
+        textcolor(YELLOW);  // Accessible room
+        printf("O");
+    } else {
+        textcolor(WHITE);  // Inaccessible room
+        printf("O");
+    }
+
+    // Reset to default color after drawing the map
+    textcolor(WHITE);
 }
+
+
+
 
 void displayRoom() {
     clearScreen();
