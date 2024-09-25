@@ -210,6 +210,26 @@ void updateMap() {
     }
 }
 
+void displayCommands() {
+    int commandsX = SCREEN_WIDTH - 25;
+    int commandsY = 1;
+
+    gotoxy(commandsX, commandsY);
+    printf("Commands:");
+    gotoxy(commandsX, commandsY + 1);
+    printf(" north   - Move north");
+    gotoxy(commandsX, commandsY + 2);
+    printf(" south   - Move south");
+    gotoxy(commandsX, commandsY + 3);
+    printf(" east    - Move east");
+    gotoxy(commandsX, commandsY + 4);
+    printf(" west    - Move west");
+    gotoxy(commandsX, commandsY + 5);
+    printf(" take item - Take item");
+    gotoxy(commandsX, commandsY + 6);
+    printf(" quit    - Exit game");
+}
+
 void displayRoom() {
     int mapX, mapY;
     int i, j;
@@ -226,22 +246,26 @@ void displayRoom() {
     if (pizzeriaRooms[currentLocation].east != -1) printf(" EAST");
     if (pizzeriaRooms[currentLocation].west != -1) printf(" WEST");
 
-    gotoxy(2, 5);
-    printf("Items in room: %s", pizzeriaRooms[currentLocation].item);
+    gotoxy(2, 4);
+    printf("Item: %s", pizzeriaRooms[currentLocation].item);
 
-    gotoxy(2, 7);
-    printf("Ingredients collected: %s", ingredientsBag);
+    drawCompass();
 
     updateMap();
     gotoxy(2, 9);
+    printf("Pizzeria Map:\n");
+
+    mapX = 2;
+    mapY = 10;
     for (i = 0; i < MAP_HEIGHT; i++) {
+        gotoxy(mapX, mapY + i);
         for (j = 0; j < MAP_WIDTH; j++) {
             printf("%c", pizzeriaMap[i][j]);
         }
-        printf("\n");
     }
 
-    drawCompass();
+    /* Display commands in the top-right corner */
+    displayCommands();
 }
 
 int main() {
@@ -284,11 +308,17 @@ int main() {
                 pizzaReady = 1;
                 printf("You have all the ingredients! Time to bake the pizza!\n");
             }
+        } else if (strcmp(input, "quit") == 0) {
+            printf("Exiting the game.\n");
+            break;
         } else {
             printf("I don't understand that.\n");
         }
     }
 
-    printf("\nCongratulations! You've collected all the ingredients and baked the perfect pizza!\n");
+    if (pizzaReady) {
+        printf("\nCongratulations! You've collected all the ingredients and baked the perfect pizza!\n");
+    }
+
     return 0;
 }
